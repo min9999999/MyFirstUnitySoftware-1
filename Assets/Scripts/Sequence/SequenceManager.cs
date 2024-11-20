@@ -1,12 +1,19 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 /// <summary>
-/// Obj ���ӿ�����Ʈ�� ���� �ð� ���� �̵���Ų��.
+/// Obj 게임오브젝트를 일정 시간 마다 이동시킨다.
 /// </summary>
 public class SequenceManager : MonoBehaviour
 {
     [SerializeField] Transform obj;
+    [SerializeField] Transform obj2;
+    [SerializeField] Vector3 obj2OriginPos;
+    [SerializeField] Vector3 obj2Destination;
+    [SerializeField] Transform obj3;
+    [SerializeField] Vector3 obj3OriginPos;
+    [SerializeField] Vector3 obj3Destination;
     [SerializeField] List<Transform> positions = new List<Transform>();
     [SerializeField] float duration;
     [SerializeField] int count;
@@ -19,9 +26,23 @@ public class SequenceManager : MonoBehaviour
     private void Start()
     {
         originPos = obj.position;
+        obj2OriginPos = obj2.position;
+        obj3OriginPos = obj3.position;
+
+        //StartCoroutine(Sequence2());
+        //StartCoroutine(Sequence3());
+        StartCoroutine(Sequence4());
     }
     // Update is called once per frame
     void Update()
+    {
+        Sequence1();
+    }
+
+    /// <summary>
+    /// obj가 positions을 순회하는 메서드
+    /// </summary>
+    private void Sequence1()
     {
         currentTime += Time.deltaTime;
 
@@ -43,5 +64,40 @@ public class SequenceManager : MonoBehaviour
 
             currentTime = 0;
         }
+    }
+
+    /// <summary>
+    /// obj2와 obj3이 현 위치에서 목적지까지 이동시키는 메서드
+    /// </summary>
+    float curTime2;
+    private IEnumerator Sequence2()
+    {
+        while((curTime2 / 2) < 1)
+        {
+            curTime2 += Time.deltaTime;
+            obj2.position = Vector3.Lerp(obj2OriginPos, obj2Destination, curTime2 / 2);
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    float curTime3;
+    private IEnumerator Sequence3()
+    {
+        while ((curTime3 / 3) < 1)
+        {
+            curTime3 += Time.deltaTime;
+            obj3.position = Vector3.Lerp(obj3OriginPos, obj3Destination, curTime3 / 3);
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    // Sequence2와 Sequence3를 순차적으로 실행
+    IEnumerator Sequence4()
+    {
+        yield return Sequence2();
+
+        yield return Sequence3();
     }
 }
