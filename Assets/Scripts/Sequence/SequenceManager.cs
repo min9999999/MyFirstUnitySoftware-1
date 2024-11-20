@@ -8,12 +8,6 @@ using System.Collections;
 public class SequenceManager : MonoBehaviour
 {
     [SerializeField] Transform obj;
-    [SerializeField] Transform obj2;
-    [SerializeField] Vector3 obj2OriginPos;
-    [SerializeField] Vector3 obj2Destination;
-    [SerializeField] Transform obj3;
-    [SerializeField] Vector3 obj3OriginPos;
-    [SerializeField] Vector3 obj3Destination;
     [SerializeField] List<Transform> positions = new List<Transform>();
     [SerializeField] float duration;
     [SerializeField] int count;
@@ -26,12 +20,10 @@ public class SequenceManager : MonoBehaviour
     private void Start()
     {
         originPos = obj.position;
-        obj2OriginPos = obj2.position;
-        obj3OriginPos = obj3.position;
 
         //StartCoroutine(Sequence2());
         //StartCoroutine(Sequence3());
-        StartCoroutine(Sequence4());
+        //StartCoroutine(Sequence4());
     }
     // Update is called once per frame
     void Update()
@@ -66,7 +58,7 @@ public class SequenceManager : MonoBehaviour
         }
     }
 
-    /// <summary>
+/*    /// <summary>
     /// obj2와 obj3이 현 위치에서 목적지까지 이동시키는 메서드
     /// </summary>
     float curTime2;
@@ -99,5 +91,8 @@ public class SequenceManager : MonoBehaviour
         yield return Sequence2();
 
         yield return Sequence3();
-    }
+    }*/
+
+    // Quaternion Lerp, Quaternion Slerp
+
 }
