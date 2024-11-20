@@ -12,11 +12,6 @@ public class PlayerMove : MonoBehaviour
     public float rotSpeed = 2f;
     Vector3 direction; // 벡터: 위치와 크기를 가지고있는 값
 
-    void Start()
-    {
-
-    }
-    // Update is called once per frame
     void Update()
     {
         //transform.position += Vector3.forward * speed;
@@ -86,7 +81,7 @@ public class PlayerMove : MonoBehaviour
         transform.position += direction * speed * Time.deltaTime;
     }
 
-    // RigidBody를 가지고 있는 물체가 다른 충돌체(Collider)에 부딪혔을 때 실행
+    // 강체(RigidBody)를 가지고 있는 물체가 다른 충돌체(Collider)에 부딪혔을 때 실행
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "button")

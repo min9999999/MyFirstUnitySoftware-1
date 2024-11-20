@@ -9,11 +9,13 @@ public class ShepherdMove : MonoBehaviour
 {
     // 자료구조
     public GameObject[] dest = new GameObject[4];
-    public List<GameObject> destinations = new List<GameObject>();
-    public Queue<GameObject> queue = new Queue<GameObject>();
-    public Vector3 originPos;
+    public float speed;
+
+    Vector3 originPos;
     bool isWalking = false;
     bool isReturning = false;
+    int count = 0;
+    Vector3 dir;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,12 +28,16 @@ public class ShepherdMove : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            isWalking = true;
+            isWalking = !isWalking;
+
+            isReturning = false;
         }
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            isReturning = true;
+            isReturning = !isReturning;
+         
+            isWalking = false;
         }
 
         if (isWalking)
@@ -40,41 +46,24 @@ public class ShepherdMove : MonoBehaviour
         }
         else if(isReturning)
         {
-
+            Vector3 newDir = (originPos - transform.position).normalized;
+            transform.position += newDir * speed * Time.deltaTime;
+            transform.forward = newDir;
         }
     }
 
-    int count = 0;
-    Vector3 dir;
-    public float speed;
 
     void Move()
     {
         float distance = 0;
 
-        dir = (dest[count].transform.position - transform.position).normalized;
-        transform.position += dir * speed * Time.deltaTime;
-/*        switch (count)
-        {
-            case 0:
-                // 1번 위치로 가세요(반복)
-                dir = (dest[count].transform.position - transform.position).normalized;
-                break;
-            case 1:
-                // 2번 위치로 가세요(반복)
-                dir = (dest[count].transform.position - transform.position).normalized;
-                break;
-            case 2:
-                // 3번 위치로 가세요(반복)
-                dir = (dest[count].transform.position - transform.position).normalized;
-                break;
-            case 3:
-                // 0번 위치로 가세요(반복)
-                dir = (dest[count].transform.position - transform.position).normalized;
-                break;
-        }*/
-
+        dir = dest[count].transform.position - transform.position;
         distance = dir.magnitude;
+        dir = dir.normalized;
+
+        transform.position += dir * speed * Time.deltaTime;
+        transform.forward = dir;
+
         if (distance < 0.5f)
         {
             count++;
