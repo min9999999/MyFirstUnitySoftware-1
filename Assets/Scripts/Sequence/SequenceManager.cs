@@ -52,7 +52,7 @@ public class SequenceManager : MonoBehaviour
         {
             duration = Random.Range(randomMin, randomMax);
 
-            count = (count < positions.Count - 1) ? count + 1 : 0;
+            count = (count < positions.Count - 1) ? count + 1 : 0; // 삼항연산자 (조건) ? A : B 
 
             currentTime = 0;
         }
