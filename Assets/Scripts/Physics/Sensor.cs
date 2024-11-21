@@ -5,7 +5,7 @@ public class Sensor : MonoBehaviour
     private bool isSensored = false;
     public bool IsSensored { get; set; }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Package")
         {

@@ -24,8 +24,16 @@ public class Conveyor : MonoBehaviour
 
     private void Start()
     {
-        
         StartCoroutine(Sensor1Callback());
+
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StopCoroutine(coroutine);
+        }
     }
 
     private IEnumerator RunConveyor()
@@ -70,13 +78,14 @@ public class Conveyor : MonoBehaviour
         }
     }
 
+    Coroutine coroutine;
     public void OnStartBtnClkEvent()
     {
         if (isExecutable)
         {
             print("컨베이어 작동!");
 
-            StartCoroutine(RunConveyor());
+            coroutine = StartCoroutine(RunConveyor());
 
             StartCoroutine(Sensor2Callback());
 
