@@ -25,7 +25,6 @@ public class Conveyor : MonoBehaviour
     private void Start()
     {
         StartCoroutine(Sensor1Callback());
-
     }
 
     private void Update()
