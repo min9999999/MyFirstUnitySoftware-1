@@ -9,6 +9,9 @@ TagManager:
   - Package
   - Obstacle
   - Exit
+  - Ball
+  - Obstacle1
+  - Obstacle2
   layers:
   - Default
   - TransparentFX

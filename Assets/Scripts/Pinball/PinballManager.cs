@@ -9,9 +9,10 @@ public class PinballManager : MonoBehaviour
     [SerializeField] Transform handleRight;
     [SerializeField] TMP_Text pointText;
     [SerializeField] float power = 5;
-    [SerializeField] int point;
+    [SerializeField] int score;
     [SerializeField] int gameCount = 3;
     Vector3 originSpherePos;
+    Quaternion originSphereRot;
     bool isBallTouched;
     Coroutine leftHandleCoroutine;
     bool isLeftHandleWorking;
@@ -22,6 +23,9 @@ public class PinballManager : MonoBehaviour
     {
         pointText.text = "SCORE: ";
         originSpherePos = sphereRB.transform.position;
+        originSphereRot = sphereRB.transform.rotation;
+        sphereRB.angularVelocity = Vector3.zero;
+        sphereRB.linearVelocity = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -42,16 +46,27 @@ public class PinballManager : MonoBehaviour
         {
             RotateHandle(handleLeft);
         }
+        else if(Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.A))
+        {
+            ReturnHandle(handleLeft);
+        }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
         {
             RotateHandle(handleRight);
+        }
+        else if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.D))
+        {
+            ReturnHandle(handleRight);
         }
     }
 
     public void ResetGame()
     {
         isBallTouched = false;
+
+        pointText.text = $"GREAT JOB\nFINAL SCORE: {score}\nIf you want to try one more time, please press ESC button.";
+
         sphereRB.transform.position = originSpherePos;
     }
 
@@ -59,11 +74,23 @@ public class PinballManager : MonoBehaviour
     {
         if(handle.name.Contains("Left") && !isLeftHandleWorking)
         {
-            leftHandleCoroutine = StartCoroutine(RotateAngle(handle, 45, -45, .1f));
+            leftHandleCoroutine = StartCoroutine(RotateAngle(handle, 35, -45, .05f));
         }
         else if (handle.name.Contains("Right") && !isRightHandleWorking)
         {
-            rightHandleCoroutine = StartCoroutine(RotateAngle(handle, -45, 45, .1f));
+            rightHandleCoroutine = StartCoroutine(RotateAngle(handle, -35, 45, .05f));
+        }
+    }
+
+    public void ReturnHandle(Transform handle)
+    {
+        if (handle.name.Contains("Left") && !isLeftHandleWorking)
+        {
+            leftHandleCoroutine = StartCoroutine(RotateAngle(handle, -45, 35, .05f));
+        }
+        else if (handle.name.Contains("Right") && !isRightHandleWorking)
+        {
+            rightHandleCoroutine = StartCoroutine(RotateAngle(handle, 45, -35, .05f));
         }
     }
 
@@ -92,5 +119,21 @@ public class PinballManager : MonoBehaviour
             isLeftHandleWorking = false;
         else
             isLeftHandleWorking = false;
+    }
+
+    public void UpScore(string tag)
+    {
+        if(tag.Contains("Obstacle"))
+        {
+            pointText.text = "SCORE: " + score + 50;
+        }
+        else if (tag.Contains("Obstacle1"))
+        {
+            pointText.text = "SCORE: " + (score + 100);
+        }
+        else if (tag.Contains("Obstacle2"))
+        {
+            pointText.text = "SCORE: " + (score + 1000);
+        }
     }
 }
