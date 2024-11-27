@@ -14,8 +14,8 @@ public class Cylinder : MonoBehaviour
     [SerializeField] float duration;
     [SerializeField] Transform forwardLS;
     [SerializeField] Transform backwardLS;
-    [SerializeField] bool isForward = false;
-    [SerializeField] bool isRodMoving = false;
+    public bool isForward = false;
+    public bool isRodMoving = false;
 
     public void OnForwardBtnClkEvent()
     {
@@ -35,8 +35,8 @@ public class Cylinder : MonoBehaviour
     {
         isRodMoving = true;
 
-        Vector3 minPos = new Vector3(rod.transform.localPosition.x, min, rod.transform.localPosition.z);
-        Vector3 maxPos = new Vector3(rod.transform.localPosition.x, max, rod.transform.localPosition.z);
+        Vector3 minPos = new Vector3(rod.transform.localPosition.x,  rod.transform.localPosition.z);
+        Vector3 maxPos = new Vector3(rod.transform.localPosition.x,  rod.transform.localPosition.z);
 
         float currentTime = 0;
 

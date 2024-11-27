@@ -10,7 +10,7 @@ public class MPSManager : MonoBehaviour
     [SerializeField] List<Cylinder> cylinders = new List<Cylinder>();
     //[SerializeField] List<S> cylinders = new List<Cylinder>();
     [SerializeField] List<MeshRenderer> lamps = new List<MeshRenderer>();
-    [SerializeField] Transform pusher;
+    [SerializeField] Pusher pusher;
     [SerializeField] GameObject[] objPrefabs;
     [SerializeField] Transform spawnPos;
     int count;
@@ -24,6 +24,7 @@ public class MPSManager : MonoBehaviour
         yellowLamp = lamps[1].material.GetColor("_BaseColor");
         greenLamp = lamps[2].material.GetColor("_BaseColor");
     }
+
     public void OnSpawnObjBtnClkEvent()
     {
         if (count > objPrefabs.Length - 1) count = 0;
@@ -31,6 +32,7 @@ public class MPSManager : MonoBehaviour
         Instantiate(objPrefabs[count++], spawnPos.position, Quaternion.identity, transform);
         //obj.transform.position = spawnPos.position;
     }
+
     public void OnLampOnOffBtnClkEvent(string name)
     {
         Color color;
@@ -81,8 +83,13 @@ public class MPSManager : MonoBehaviour
         }
     }
 
-    public void OnConveyorBtnClkEvent()
+    public void OnConvCWBtnClkEvent()
     {
+        pusher.Move(true);
+    }
 
+    public void OnConvCCWBtnClkEvent()
+    {
+        pusher.Move(false);
     }
 }
