@@ -9,10 +9,14 @@ namespace MPS
     /// </summary>
     public class MPSManager : MonoBehaviour
     {
+        [Header("Facilities")]
         [SerializeField] List<Cylinder> cylinders = new List<Cylinder>();
-        //[SerializeField] List<S> cylinders = new List<Cylinder>();
         [SerializeField] List<MeshRenderer> lamps = new List<MeshRenderer>();
         [SerializeField] List<Pusher> pushers = new List<Pusher>();
+        [SerializeField] List<Sensor> sensors = new List<Sensor>();
+
+        [Space(20)]
+        [Header("Etc")]
         [SerializeField] GameObject[] objPrefabs;
         [SerializeField] Transform spawnPos;
         int count;
