@@ -35,8 +35,8 @@ public class Cylinder : MonoBehaviour
     {
         isRodMoving = true;
 
-        Vector3 minPos = new Vector3(rod.transform.localPosition.x,  rod.transform.localPosition.z);
-        Vector3 maxPos = new Vector3(rod.transform.localPosition.x,  rod.transform.localPosition.z);
+        Vector3 minPos = new Vector3(rod.transform.localPosition.x, min, rod.transform.localPosition.z);
+        Vector3 maxPos = new Vector3(rod.transform.localPosition.x, max, rod.transform.localPosition.z);
 
         float currentTime = 0;
 

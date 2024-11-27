@@ -1,31 +1,40 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 /// <summary>
 /// Pusher를 OriginPos에서 DestPos까지 특정 속도로 이동
 /// </summary>
 public class Pusher : MonoBehaviour
 {
+    [SerializeField] Transform pusherOriginPos;
     [SerializeField] Transform pusherDestPos;
-    Vector3 pusherOriginPos;
     public float pusherSpeed;
     public bool isClockWise = true;
-
-    private void Start()
-    {
-        pusherOriginPos = transform.localPosition;
-    }
+    public bool isMoving = false;
+    Coroutine runningCoroutine;
 
     public void Move(bool _isClockWise)
     {
-        if(_isClockWise)
+        if (isMoving) return;
+
+        isMoving = true;
+
+        if (_isClockWise)
         {
-            StartCoroutine(RotateCW());
+            runningCoroutine = StartCoroutine(RotateCW());
         }
         else
         {
-            StartCoroutine(RotateCCW());
+            runningCoroutine = StartCoroutine(RotateCCW());
         }
+    }
+
+    public void Stop()
+    {
+        isMoving = false;
+
+        StopCoroutine(runningCoroutine);
     }
 
     IEnumerator RotateCW()
@@ -37,9 +46,9 @@ public class Pusher : MonoBehaviour
 
             transform.position += direction.normalized * pusherSpeed * Time.deltaTime;
 
-            if (distance < 0.5f)
-            {
-                transform.position = pusherOriginPos;
+            if (distance < 0.1f)
+            {                
+                transform.position = pusherOriginPos.position;
             }
 
             yield return new WaitForEndOfFrame();
@@ -50,12 +59,19 @@ public class Pusher : MonoBehaviour
     {
         while (true)
         {
-            Vector3 direction = pusherOriginPos - transform.position;
+            Vector3 direction = pusherOriginPos.position - transform.position;
             float distance = direction.magnitude;
 
             transform.position += direction.normalized * pusherSpeed * Time.deltaTime;
 
-            if (distance < 0.5f)
+            if( distance > 0.1f && 3.5f > distance)
+            {
+                // 구속 해지
+                if(transform.childCount > 1)
+                    transform.GetChild(1).SetParent(null);
+                
+            }
+            if (distance < 0.1f)
             {
                 transform.position = pusherDestPos.position;
             }
@@ -64,8 +80,18 @@ public class Pusher : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        print(other.name);
+        if(other.tag == "Metal" || other.tag == "NonMetal")
+        {
+            other.transform.SetParent(transform);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        // 구속 해지
+        if (transform.childCount > 1)
+            transform.GetChild(1).SetParent(null);
     }
 }

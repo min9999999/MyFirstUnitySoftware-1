@@ -10,7 +10,7 @@ public class MPSManager : MonoBehaviour
     [SerializeField] List<Cylinder> cylinders = new List<Cylinder>();
     //[SerializeField] List<S> cylinders = new List<Cylinder>();
     [SerializeField] List<MeshRenderer> lamps = new List<MeshRenderer>();
-    [SerializeField] Pusher pusher;
+    [SerializeField] List<Pusher> pushers = new List<Pusher>();
     [SerializeField] GameObject[] objPrefabs;
     [SerializeField] Transform spawnPos;
     int count;
@@ -85,11 +85,19 @@ public class MPSManager : MonoBehaviour
 
     public void OnConvCWBtnClkEvent()
     {
-        pusher.Move(true);
+        foreach(var pusher in pushers)  
+            pusher.Move(true);
     }
 
     public void OnConvCCWBtnClkEvent()
     {
-        pusher.Move(false);
+        foreach (var pusher in pushers)
+            pusher.Move(false);
+    }
+
+    public void OnConvStopBtnClkEvent()
+    {
+        foreach (var pusher in pushers)
+            pusher.Stop();
     }
 }

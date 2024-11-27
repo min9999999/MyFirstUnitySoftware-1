@@ -12,6 +12,8 @@ TagManager:
   - Ball
   - Obstacle1
   - Obstacle2
+  - Metal
+  - NonMetal
   layers:
   - Default
   - TransparentFX
