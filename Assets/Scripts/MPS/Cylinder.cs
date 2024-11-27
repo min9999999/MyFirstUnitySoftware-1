@@ -1,12 +1,12 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 namespace MPS
 {
     /// <summary>
-    /// °ø¾ĞÀÌ °ø±ŞµÇ¸é ½Ç¸°´õ ·Îµå°¡ ÀÏÁ¤ °Å¸®¸¸Å­, ÀÏÁ¤ ¼Óµµ·Î ÀüÁø ¶Ç´Â ÈÄÁøÇÑ´Ù.
-    /// ÀüÁø ¶Ç´Â ÈÄÁø ½Ã, ÀüÈÄÁø Limit Switch(LS)°¡ ÀÛµ¿ÇÑ´Ù.
-    /// ¼Ó¼º: ½Ç¸°´õ·Îµå, Min-Max Range, Duration, ÀüÈÄ¹æ Limit Switch
+    /// ê³µì••ì´ ê³µê¸‰ë˜ë©´ ì‹¤ë¦°ë” ë¡œë“œê°€ ì¼ì • ê±°ë¦¬ë§Œí¼, ì¼ì • ì†ë„ë¡œ ì „ì§„ ë˜ëŠ” í›„ì§„í•œë‹¤.
+    /// ì „ì§„ ë˜ëŠ” í›„ì§„ ì‹œ, ì „í›„ì§„ Limit Switch(LS)ê°€ ì‘ë™í•œë‹¤.
+    /// ì†ì„±: ì‹¤ë¦°ë”ë¡œë“œ, Min-Max Range, Duration, ì „í›„ë°© Limit Switch
     /// </summary>
     public class Cylinder : MonoBehaviour
     {

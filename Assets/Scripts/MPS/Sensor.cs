@@ -1,35 +1,35 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace MPS
 {
     /// <summary>
-    /// ¼¾¼­ÀÇ Äİ¶óÀÌ´õ¿¡ ±İ¼Ó ¶Ç´Â ºñ±İ¼Ó ¹°Ã¼°¡ ´ê¾ÒÀ» °æ¿ì ¼¾¼­¸¦ È°¼ºÈ­½ÃÅ²´Ù.
-    /// ¼Ó¼º: ¼¾¼­Å¸ÀÔ, ¼¾¼­ È°¼ºÈ­ À¯¹«
+    /// ì„¼ì„œì˜ ì½œë¼ì´ë”ì— ê¸ˆì† ë˜ëŠ” ë¹„ê¸ˆì† ë¬¼ì²´ê°€ ë‹¿ì•˜ì„ ê²½ìš° ì„¼ì„œë¥¼ í™œì„±í™”ì‹œí‚¨ë‹¤.
+    /// ì†ì„±: ì„¼ì„œíƒ€ì…, ì„¼ì„œ í™œì„±í™” ìœ ë¬´
     /// </summary>
     public class Sensor : MonoBehaviour
     {
         public enum SensorType
         {
-            ±ÙÁ¢¼¾¼­,
-            À¯µµÇü¼¾¼­,
-            ¿ë·®Çü¼¾¼­
+            ê·¼ì ‘ì„¼ì„œ,
+            ìœ ë„í˜•ì„¼ì„œ,
+            ìš©ëŸ‰í˜•ì„¼ì„œ
         }
-        public SensorType sensorType = SensorType.±ÙÁ¢¼¾¼­;
+        public SensorType sensorType = SensorType.ê·¼ì ‘ì„¼ì„œ;
         public bool isEnabled = false;
 
         private void OnTriggerStay(Collider other)
         {
-            if(sensorType == SensorType.±ÙÁ¢¼¾¼­)
+            if(sensorType == SensorType.ê·¼ì ‘ì„¼ì„œ)
             {
                 isEnabled = true;
-                print("¹°Ã¼ °¨Áö");
+                print("ë¬¼ì²´ ê°ì§€");
             }
-            else if(sensorType == SensorType.À¯µµÇü¼¾¼­)
+            else if(sensorType == SensorType.ìœ ë„í˜•ì„¼ì„œ)
             {
                 if(other.tag == "Metal")
                 {
                     isEnabled = true;
-                    print("±İ¼Ó °¨Áö");
+                    print("ê¸ˆì† ê°ì§€");
                 }
             }
 

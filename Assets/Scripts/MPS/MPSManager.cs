@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 namespace MPS
 {
     /// <summary>
-    /// ¸ğµç ¼³ºñÀÇ »óÅÂ¸¦ È®ÀÎ, ¹°Ã¼¸¦ »ı¼º
-    /// ¼Ó¼º: °¢ ¼³ºñµé, ¹°Ã¼ÇÁ¸®ÆÕ º¯¼ö
+    /// ëª¨ë“  ì„¤ë¹„ì˜ ìƒíƒœë¥¼ í™•ì¸, ë¬¼ì²´ë¥¼ ìƒì„±
+    /// ì†ì„±: ê° ì„¤ë¹„ë“¤, ë¬¼ì²´í”„ë¦¬íŒ¹ ë³€ìˆ˜
     /// </summary>
     public class MPSManager : MonoBehaviour
     {

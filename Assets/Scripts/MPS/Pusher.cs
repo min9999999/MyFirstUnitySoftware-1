@@ -1,11 +1,11 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
 
 namespace MPS
 {
     /// <summary>
-    /// Pusher¸¦ OriginPos¿¡¼­ DestPos±îÁö Æ¯Á¤ ¼Óµµ·Î ÀÌµ¿
+    /// Pusherë¥¼ OriginPosì—ì„œ DestPosê¹Œì§€ íŠ¹ì • ì†ë„ë¡œ ì´ë™
     /// </summary>
     public class Pusher : MonoBehaviour
     {
@@ -68,7 +68,7 @@ namespace MPS
 
                 if (distance > 0.1f && 3.5f > distance)
                 {
-                    // ±¸¼Ó ÇØÁö
+                    // êµ¬ì† í•´ì§€
                     if (transform.childCount > 1)
                         transform.GetChild(1).SetParent(null);
 
@@ -92,7 +92,7 @@ namespace MPS
 
         private void OnTriggerExit(Collider other)
         {
-            // ±¸¼Ó ÇØÁö
+            // êµ¬ì† í•´ì§€
             if (transform.childCount > 1)
                 transform.GetChild(1).SetParent(null);
         }
