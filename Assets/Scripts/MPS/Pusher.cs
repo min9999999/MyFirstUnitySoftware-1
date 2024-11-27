@@ -2,96 +2,100 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
 
-/// <summary>
-/// Pusher를 OriginPos에서 DestPos까지 특정 속도로 이동
-/// </summary>
-public class Pusher : MonoBehaviour
+namespace MPS
 {
-    [SerializeField] Transform pusherOriginPos;
-    [SerializeField] Transform pusherDestPos;
-    public float pusherSpeed;
-    public bool isClockWise = true;
-    public bool isMoving = false;
-    Coroutine runningCoroutine;
-
-    public void Move(bool _isClockWise)
+    /// <summary>
+    /// Pusher를 OriginPos에서 DestPos까지 특정 속도로 이동
+    /// </summary>
+    public class Pusher : MonoBehaviour
     {
-        if (isMoving) return;
+        [SerializeField] Transform pusherOriginPos;
+        [SerializeField] Transform pusherDestPos;
+        public float pusherSpeed;
+        public bool isClockWise = true;
+        public bool isMoving = false;
+        Coroutine runningCoroutine;
 
-        isMoving = true;
-
-        if (_isClockWise)
+        public void Move(bool _isClockWise)
         {
-            runningCoroutine = StartCoroutine(RotateCW());
-        }
-        else
-        {
-            runningCoroutine = StartCoroutine(RotateCCW());
-        }
-    }
+            if (isMoving) return;
 
-    public void Stop()
-    {
-        isMoving = false;
+            isMoving = true;
 
-        StopCoroutine(runningCoroutine);
-    }
-
-    IEnumerator RotateCW()
-    {
-        while (true)
-        {
-            Vector3 direction = pusherDestPos.position - transform.position;
-            float distance = direction.magnitude;
-
-            transform.position += direction.normalized * pusherSpeed * Time.deltaTime;
-
-            if (distance < 0.1f)
-            {                
-                transform.position = pusherOriginPos.position;
-            }
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    IEnumerator RotateCCW()
-    {
-        while (true)
-        {
-            Vector3 direction = pusherOriginPos.position - transform.position;
-            float distance = direction.magnitude;
-
-            transform.position += direction.normalized * pusherSpeed * Time.deltaTime;
-
-            if( distance > 0.1f && 3.5f > distance)
+            if (_isClockWise)
             {
-                // 구속 해지
-                if(transform.childCount > 1)
-                    transform.GetChild(1).SetParent(null);
-                
+                runningCoroutine = StartCoroutine(RotateCW());
             }
-            if (distance < 0.1f)
+            else
             {
-                transform.position = pusherDestPos.position;
+                runningCoroutine = StartCoroutine(RotateCCW());
             }
-
-            yield return new WaitForEndOfFrame();
         }
-    }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if(other.tag == "Metal" || other.tag == "NonMetal")
+        public void Stop()
         {
-            other.transform.SetParent(transform);
+            isMoving = false;
+
+            StopCoroutine(runningCoroutine);
+        }
+
+        IEnumerator RotateCW()
+        {
+            while (true)
+            {
+                Vector3 direction = pusherDestPos.position - transform.position;
+                float distance = direction.magnitude;
+
+                transform.position += direction.normalized * pusherSpeed * Time.deltaTime;
+
+                if (distance < 0.1f)
+                {
+                    transform.position = pusherOriginPos.position;
+                }
+
+                yield return new WaitForEndOfFrame();
+            }
+        }
+
+        IEnumerator RotateCCW()
+        {
+            while (true)
+            {
+                Vector3 direction = pusherOriginPos.position - transform.position;
+                float distance = direction.magnitude;
+
+                transform.position += direction.normalized * pusherSpeed * Time.deltaTime;
+
+                if (distance > 0.1f && 3.5f > distance)
+                {
+                    // 구속 해지
+                    if (transform.childCount > 1)
+                        transform.GetChild(1).SetParent(null);
+
+                }
+                if (distance < 0.1f)
+                {
+                    transform.position = pusherDestPos.position;
+                }
+
+                yield return new WaitForEndOfFrame();
+            }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (other.tag == "Metal" || other.tag == "NonMetal")
+            {
+                other.transform.SetParent(transform);
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            // 구속 해지
+            if (transform.childCount > 1)
+                transform.GetChild(1).SetParent(null);
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        // 구속 해지
-        if (transform.childCount > 1)
-            transform.GetChild(1).SetParent(null);
-    }
 }
