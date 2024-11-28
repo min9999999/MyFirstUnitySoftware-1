@@ -10,7 +10,7 @@ namespace MPS
     public class MPSManager : MonoBehaviour
     {
         [Header("Facilities")]
-        [SerializeField] List<Cylinder> cylinders = new List<Cylinder>();
+        public List<Cylinder> cylinders = new List<Cylinder>();
         [SerializeField] List<MeshRenderer> lamps = new List<MeshRenderer>();
         [SerializeField] List<Pusher> pushers = new List<Pusher>();
         [SerializeField] List<Sensor> sensors = new List<Sensor>();

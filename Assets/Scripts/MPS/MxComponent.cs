@@ -1,9 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using ActUtlType64Lib;
 using System;
 using UnityEngine.UI;
 using TMPro;
 using static UnityEngine.Rendering.DebugUI;
+using MPS;
 
 public class MxComponent : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class MxComponent : MonoBehaviour
     State state = State.DISCONNECTED;
 
     ActUtlType64 mxComponent;
+    [SerializeField] MPSManager mPSManager;
     [SerializeField] TMP_InputField deviceInput;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -25,23 +27,46 @@ public class MxComponent : MonoBehaviour
         mxComponent.ActLogicalStationNumber = 1;
     }
 
+    /// <summary>
+    /// ì‹¤ì‹œê°„ìœ¼ë¡œ PLC í”„ë¡œê·¸ë¨ì˜ ì¸í’‹ ì •ë³´(X ë””ë°”ì´ìŠ¤ ì •ë³´)ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
+    /// </summary>
+    private void Update()
+    {
+        if (state == State.DISCONNECTED) return;
+
+        string xDevices = ReadDevices("X0", 1);
+        string yDevices = ReadDevices("Y0", 1);
+
+        int ê³µê¸‰ì‹¤ë¦°ë”ì „ì§„ = yDevices[0] - '0';
+        int ê³µê¸‰ì‹¤ë¦°ë”í›„ì§„ = yDevices[1] - '0';
+
+        if(ê³µê¸‰ì‹¤ë¦°ë”ì „ì§„ == 1)
+        {
+            mPSManager.cylinders[0].OnForwardBtnClkEvent();
+        }
+        else if(ê³µê¸‰ì‹¤ë¦°ë”í›„ì§„ == 1)
+        {
+            mPSManager.cylinders[0].OnBackwardBtnClkEvent();
+        }
+    }
+
     public void OnSimConnectBtnClkEvent()
     {
         if (state == State.CONNECTED) return;
 
         int returnValue = mxComponent.Open();
 
-        string hexValue = Convert.ToString(returnValue, 16);
 
-        if(hexValue == "0")
+        if(returnValue == 0)
         {
             state = State.CONNECTED;
 
-            print("Simulator¿Í ¿¬°áÀÌ Àß µÇ¾ú½À´Ï´Ù.");
+            print("Simulatorì™€ ì—°ê²°ì´ ì˜ ë˜ì—ˆìŠµë‹ˆë‹¤.");
         }
         else
         {
-            print($"¿¡·¯ÄÚµå¸¦ È®ÀÎÇØ ÁÖ¼¼¿ä. ¿¡·¯ÄÚµå: {hexValue}");
+            string hexValue = Convert.ToString(returnValue, 16);
+            print($"ì—ëŸ¬ì½”ë“œë¥¼ í™•ì¸í•´ ì£¼ì„¸ìš”. ì—ëŸ¬ì½”ë“œ: {hexValue}");
         }
     }
 
@@ -51,17 +76,16 @@ public class MxComponent : MonoBehaviour
 
         int returnValue = mxComponent.Close();
 
-        string hexValue = Convert.ToString(returnValue, 16);
-
-        if (hexValue == "0")
+        if (returnValue == 0)
         {
             state = State.DISCONNECTED;
 
-            print("Simulator¿Í ¿¬°áÀÌ ÇØÁ¦µÇ¾ú½À´Ï´Ù.");
+            print("Simulatorì™€ ì—°ê²°ì´ í•´ì œë˜ì—ˆìŠµë‹ˆë‹¤.");
         }
         else
         {
-            print($"¿¡·¯ÄÚµå¸¦ È®ÀÎÇØ ÁÖ¼¼¿ä. ¿¡·¯ÄÚµå: {hexValue}");
+            string hexValue = Convert.ToString(returnValue, 16);
+            print($"ì—ëŸ¬ì½”ë“œë¥¼ í™•ì¸í•´ ì£¼ì„¸ìš”. ì—ëŸ¬ì½”ë“œ: {hexValue}");
         }
     }
 
@@ -72,13 +96,14 @@ public class MxComponent : MonoBehaviour
 
         if (returnValue == 0)
         {
-            print("µğ¹ÙÀÌ½º ÀĞ±â°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
+            print("ë””ë°”ì´ìŠ¤ ì½ê¸°ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
 
             deviceInput.text = value.ToString();
         }
         else
         {
-            print($"¿¡·¯°¡ ¹ß»ıÇÏ¿´½À´Ï´Ù. ¿¡·¯ÄÚµå: {returnValue}");
+            string hexValue = Convert.ToString(returnValue, 16);
+            print($"ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ì—ëŸ¬ì½”ë“œ: {hexValue}");
         }
     }
 
@@ -91,11 +116,85 @@ public class MxComponent : MonoBehaviour
 
         if (returnValue == 0)
         {
-            print("µğ¹ÙÀÌ½º ¾²±â°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
+            print("ë””ë°”ì´ìŠ¤ ì“°ê¸°ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
         }
         else
         {
-            print($"¿¡·¯°¡ ¹ß»ıÇÏ¿´½À´Ï´Ù. ¿¡·¯ÄÚµå: {returnValue}");
+            print($"ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ì—ëŸ¬ì½”ë“œ: {returnValue}");
+        }
+    }
+
+    public string ReadDevices(string deviceName, int blockSize)
+    {
+        int[] data = new int[blockSize];
+        int returnValue = mxComponent.ReadDeviceBlock(deviceName, blockSize, out data[0]);
+        string totalData = ""; // 110010111001111001111001110001111001100001111001100 -> X30 = ?
+
+        if (returnValue == 0)
+        {
+            print("ë””ë°”ì´ìŠ¤ ë¸”ë¡ ì½ê¸°ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
+
+            foreach (int d in data)
+            {
+                string input = Convert.ToString(d, 2);
+                string reversed = Reverse(input);
+
+                // x[33] = 0 -> x[3][3]
+                if (16 - reversed.Length > 0) // 1101010001 -> 110101000100000 
+                {
+                    int countZero = 16 - reversed.Length;
+                    for (int i = 0; i < countZero; i++)
+                    {
+                        reversed += '0';
+                    }
+                }
+
+                totalData += reversed;
+            }
+
+            return totalData; // 00011001100
+        }
+        else
+        {
+            string hexValue = Convert.ToString(returnValue, 16);
+            print($"ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ì—ëŸ¬ì½”ë“œ: {hexValue}");
+
+            return hexValue;
+        }
+    }
+
+    public bool WriteDevices(string deviceName, int blockSize, string data)
+    {
+        // data = "1101010001000000" or "110101000100000011010100010000001101010001000000" -> 555
+        int[] convertedData = new int[blockSize];
+
+        ConvertData(data);
+
+        void ConvertData(string data)
+        {
+            for (int i = 0; i < blockSize; i++)
+            {
+                string splited = data.Substring(i * 16, 16);        // 1101010001000000
+                splited = Reverse(splited);                         // 0000001000101011(reversed)
+                convertedData[i] = Convert.ToInt32(splited, 2);     // 555(10ì§„ìˆ˜ ë³€í™˜)
+                print(convertedData[i]);
+            }
+        }
+
+        int returnValue = mxComponent.WriteDeviceBlock(deviceInput.text, blockSize, ref convertedData[0]);
+
+        if (returnValue == 0)
+        {
+            print("ë””ë°”ì´ìŠ¤ ë¸”ë¡ ì“°ê¸°ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
+
+            return true;
+        }
+        else
+        {
+            string hexValue = Convert.ToString(returnValue, 16);
+            print($"ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ì—ëŸ¬ì½”ë“œ: {hexValue}");
+
+            return false;
         }
     }
 
@@ -106,14 +205,14 @@ public class MxComponent : MonoBehaviour
 
         if (returnValue == 0)
         {
-            print("µğ¹ÙÀÌ½º ºí·Ï ÀĞ±â°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
+            print("ë””ë°”ì´ìŠ¤ ë¸”ë¡ ì½ê¸°ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
 
             string input = Convert.ToString(data, 2);
             deviceInput.text = Reverse(input);
         }
         else
         {
-            print($"¿¡·¯°¡ ¹ß»ıÇÏ¿´½À´Ï´Ù. ¿¡·¯ÄÚµå: {returnValue}");
+            print($"ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ì—ëŸ¬ì½”ë“œ: {returnValue}");
         }
     }
 
@@ -125,7 +224,7 @@ public class MxComponent : MonoBehaviour
 
         if (returnValue == 0)
         {
-            print("µğ¹ÙÀÌ½º ºí·Ï ÀĞ±â°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
+            print("ë””ë°”ì´ìŠ¤ ë¸”ë¡ ì½ê¸°ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
 
             foreach(int d in data)
             {
@@ -145,28 +244,114 @@ public class MxComponent : MonoBehaviour
                 totalData += reversed;
             }
             print(totalData); // 00011001100
-            print(totalData[38]); // 1
         }
         else
         {
-            print($"¿¡·¯°¡ ¹ß»ıÇÏ¿´½À´Ï´Ù. ¿¡·¯ÄÚµå: {returnValue}");
+            string hexValue = Convert.ToString(returnValue, 16);
+            print($"ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ì—ëŸ¬ì½”ë“œ: {hexValue}");
         }
+    }
+
+    public void OnWriteDeviceBlockBtnClkEvent()
+    {
+        OnWriteDeviceBlockBtnClkEvent(5, "11010100010000000010011000000000010101010000000000000010100000000000101000000000");
     }
 
     public void OnWriteDeviceBlockBtnClkEvent(int blockCnt, string data)
     {
-        // data = "1000100010011101" or "100010001001110110001000100111011000100010011101"
+        // data = "1101010001000000" or "110101000100000011010100010000001101010001000000" -> 555
         int[] convertedData = new int[blockCnt];
+
+        ConvertData(data);
+
+        void ConvertData(string data)
+        {
+            for (int i = 0; i < blockCnt; i++)
+            {
+                string splited = data.Substring(i * 16, 16);        // 1101010001000000
+                splited = Reverse(splited);                         // 0000001000101011(reversed)
+                convertedData[i] = Convert.ToInt32(splited, 2);     // 555(10ì§„ìˆ˜ ë³€í™˜)
+                print(convertedData[i]);
+            }
+        }
 
         int returnValue = mxComponent.WriteDeviceBlock(deviceInput.text, blockCnt, ref convertedData[0]);
 
         if (returnValue == 0)
         {
-            print("µğ¹ÙÀÌ½º ºí·Ï ¾²±â°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.");
+            print("ë””ë°”ì´ìŠ¤ ë¸”ë¡ ì“°ê¸°ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
         }
         else
         {
-            print($"¿¡·¯°¡ ¹ß»ıÇÏ¿´½À´Ï´Ù. ¿¡·¯ÄÚµå: {returnValue}");
+            string hexValue = Convert.ToString(returnValue, 16);
+            print($"ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ì—ëŸ¬ì½”ë“œ: {hexValue}");
+        }
+    }
+
+    public void OnReadDeviceRandomBtnClkEvent(int blockCnt)
+    {
+        int[] data = new int[blockCnt + 2];
+        int returnValue = mxComponent.ReadDeviceRandom("X0\nX1â€‹", blockCnt, out data[0]);
+        string totalData = ""; // 110010111001111001111001110001111001100001111001100 -> X30 = ?
+
+        if (returnValue == 0)
+        {
+            print("ë””ë°”ì´ìŠ¤ ë¸”ë¡ ì½ê¸°ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
+
+            foreach (int d in data)
+            {
+                string input = Convert.ToString(d, 2);
+                string reversed = Reverse(input);
+
+                // x[33] = 0 -> x[3][3]
+                if (16 - reversed.Length > 0) // 1101010001 -> 110101000100000 
+                {
+                    int countZero = 16 - reversed.Length;
+                    for (int i = 0; i < countZero; i++)
+                    {
+                        reversed += '0';
+                    }
+                }
+
+                totalData += reversed;
+            }
+            print(totalData); // 00011001100
+        }
+        else
+        {
+            string hexValue = Convert.ToString(returnValue, 16);
+            print($"ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ì—ëŸ¬ì½”ë“œ: {hexValue}");
+        }
+    }
+
+    public void OnWriteDeviceRandomBtnClkEvent(int blockCnt, string data)
+    {
+        // data = "1101010001000000" or "110101000100000011010100010000001101010001000000" -> 555
+        int[] convertedData = new int[blockCnt];
+
+        ConvertData(data);
+
+        void ConvertData(string data)
+        {
+            for (int i = 0; i < blockCnt; i++)
+            {
+                string splited = data.Substring(i * 16, 16);        // 1101010001000000
+                splited = Reverse(splited);                         // 0000001000101011(reversed)
+                convertedData[i] = Convert.ToInt32(splited, 2);     // 555(10ì§„ìˆ˜ ë³€í™˜)
+                print(convertedData[i]);
+            }
+        }
+
+        int returnValue = mxComponent.WriteDeviceRandom(deviceInput.text, blockCnt, ref convertedData[0]);
+
+        if (returnValue == 0)
+        {
+            print("ë””ë°”ì´ìŠ¤ ë¸”ë¡ ì“°ê¸°ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.");
+        }
+        else
+        {
+            string hexValue = Convert.ToString(returnValue, 16);
+            print($"ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ìŠµë‹ˆë‹¤. ì—ëŸ¬ì½”ë“œ: {hexValue}");
         }
     }
 
