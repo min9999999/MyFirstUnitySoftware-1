@@ -5,19 +5,35 @@ using UnityEngine.UI;
 using TMPro;
 using static UnityEngine.Rendering.DebugUI;
 using MPS;
+using System.Collections;
 
+/// <summary>
+/// MPSManager에게 데이터를 전달하고, 받는 역할
+/// </summary>
 public class MxComponent : MonoBehaviour
 {
+    public static MxComponent Instance; // 싱글턴 디자인 패턴
+
     public enum State
     {
         CONNECTED,
         DISCONNECTED
     }
-    State state = State.DISCONNECTED;
+    public State state = State.DISCONNECTED;
 
     ActUtlType64 mxComponent;
     [SerializeField] MPSManager mPSManager;
     [SerializeField] TMP_InputField deviceInput;
+    public string xDevices = "0000000000000000";
+    public string yDevices = "0000000000000000";
+    public string dDevices = "0000000000000000";
+    bool isStartBtnClicked = false;
+
+    private void Awake()
+    {
+        if(Instance == null)
+            Instance = this;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,9 +48,9 @@ public class MxComponent : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (state == State.DISCONNECTED) return;
+/*        if (state == State.DISCONNECTED) return;
 
-        string xDevices = ReadDevices("X0", 1);
+        //string xDevices = ReadDevices("X0", 1);
         string yDevices = ReadDevices("Y0", 1);
 
         int 공급실린더전진 = yDevices[0] - '0';
@@ -47,6 +63,26 @@ public class MxComponent : MonoBehaviour
         else if(공급실린더후진 == 1)
         {
             mPSManager.cylinders[0].OnBackwardBtnClkEvent();
+        }*/
+    }
+
+    public void OnStartBtnClkEvent()
+    {
+        if (!isStartBtnClicked)
+        {
+            isStartBtnClicked = true;
+            StartCoroutine(StartReadDevice());
+        }
+    }
+
+    IEnumerator StartReadDevice()
+    {
+        while(state == State.CONNECTED)
+        {
+            WriteDevices("X0", 1, xDevices);
+            yDevices = ReadDevices("Y0", 1);
+
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
@@ -181,7 +217,7 @@ public class MxComponent : MonoBehaviour
             }
         }
 
-        int returnValue = mxComponent.WriteDeviceBlock(deviceInput.text, blockSize, ref convertedData[0]);
+        int returnValue = mxComponent.WriteDeviceBlock(deviceName, blockSize, ref convertedData[0]);
 
         if (returnValue == 0)
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MPS
@@ -10,7 +11,7 @@ namespace MPS
     public class MPSManager : MonoBehaviour
     {
         [Header("Facilities")]
-        public List<Cylinder> cylinders = new List<Cylinder>();
+        [SerializeField] List<Cylinder> cylinders = new List<Cylinder>();
         [SerializeField] List<MeshRenderer> lamps = new List<MeshRenderer>();
         [SerializeField] List<Pusher> pushers = new List<Pusher>();
         [SerializeField] List<Sensor> sensors = new List<Sensor>();
@@ -29,6 +30,42 @@ namespace MPS
             redLamp = lamps[0].material.GetColor("_BaseColor");
             yellowLamp = lamps[1].material.GetColor("_BaseColor");
             greenLamp = lamps[2].material.GetColor("_BaseColor");
+        }
+
+        private void Update()
+        {
+            if (MxComponent.Instance.state == MxComponent.State.DISCONNECTED)
+                return;
+
+            if(MxComponent.Instance.yDevices.Length == 0) return;
+
+            int 공급실린더전진 = MxComponent.Instance.yDevices[0] - '0';
+            int 공급실린더후진 = MxComponent.Instance.yDevices[1] - '0';
+            int 가공실린더전진 = MxComponent.Instance.yDevices[2] - '0';
+            int 가공실린더후진 = MxComponent.Instance.yDevices[3] - '0';
+            int 송출실린더전진 = MxComponent.Instance.yDevices[4] - '0';
+            int 송출실린더후진 = MxComponent.Instance.yDevices[5] - '0';
+            int 배출실린더전진 = MxComponent.Instance.yDevices[6] - '0';
+            int 배출실린더후진 = MxComponent.Instance.yDevices[7] - '0';
+
+            if (공급실린더전진 == 1) cylinders[0].OnForwardBtnClkEvent();
+            else if (공급실린더후진 == 1) cylinders[0].OnBackwardBtnClkEvent();
+
+            if (가공실린더전진 == 1) cylinders[1].OnForwardBtnClkEvent();
+            else if (가공실린더후진 == 1) cylinders[1].OnBackwardBtnClkEvent();
+
+            if (송출실린더전진 == 1) cylinders[2].OnForwardBtnClkEvent();
+            else if (송출실린더후진 == 1) cylinders[2].OnBackwardBtnClkEvent();
+
+            if (배출실린더전진 == 1) cylinders[3].OnForwardBtnClkEvent();
+            else if (배출실린더후진 == 1) cylinders[3].OnBackwardBtnClkEvent();
+
+            // 시작버튼,정지버튼,긴급정지버튼,공급센서,물체확인센서,금속확인센서
+
+            MxComponent.Instance.xDevices = $"{0}{0}{0}" +
+                                            $"{(sensors[0].isEnabled == true ? 1 : 0)}" +
+                                            $"{(sensors[1].isEnabled == true ? 1 : 0)}" +
+                                            $"{(sensors[2].isEnabled == true ? 1 : 0)}" + "0000000000";
         }
 
         public void OnSpawnObjBtnClkEvent()
