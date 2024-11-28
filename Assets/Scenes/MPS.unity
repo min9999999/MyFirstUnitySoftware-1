@@ -8717,7 +8717,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 498400088}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 846790978}
+        m_TargetAssemblyTypeName: MPS.MPSManager, Assembly-CSharp
+        m_MethodName: OnEStopBtnClkEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &498400088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11073,7 +11085,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 644887869}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 846790978}
+        m_TargetAssemblyTypeName: MPS.MPSManager, Assembly-CSharp
+        m_MethodName: OnStopBtnClkEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &644887869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14129,6 +14153,9 @@ MonoBehaviour:
   - {fileID: 873525262}
   - {fileID: 1334027157}
   - {fileID: 1539067790}
+  startBtnState: 0
+  stopBtnState: 0
+  eStopBtnState: 0
   objPrefabs:
   - {fileID: 6926525576322460582, guid: e989841deb5e8864e9d3a64204286321, type: 3}
   - {fileID: 5222477298752737843, guid: 5cced309f0eecff46ae31f1d52d284a4, type: 3}
@@ -18097,8 +18124,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 179006707}
-        m_TargetAssemblyTypeName: MxComponent, Assembly-CSharp
+      - m_Target: {fileID: 846790978}
+        m_TargetAssemblyTypeName: MPS.MPSManager, Assembly-CSharp
         m_MethodName: OnStartBtnClkEvent
         m_Mode: 1
         m_Arguments:

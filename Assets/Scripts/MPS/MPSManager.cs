@@ -15,6 +15,9 @@ namespace MPS
         [SerializeField] List<MeshRenderer> lamps = new List<MeshRenderer>();
         [SerializeField] List<Pusher> pushers = new List<Pusher>();
         [SerializeField] List<Sensor> sensors = new List<Sensor>();
+        [SerializeField] int startBtnState = 0;
+        [SerializeField] int stopBtnState = 0;
+        [SerializeField] int eStopBtnState = 0;
 
         [Space(20)]
         [Header("Etc")]
@@ -62,7 +65,7 @@ namespace MPS
 
             // 시작버튼,정지버튼,긴급정지버튼,공급센서,물체확인센서,금속확인센서
 
-            MxComponent.Instance.xDevices = $"{0}{0}{0}" +
+            MxComponent.Instance.xDevices = $"{startBtnState}{stopBtnState}{eStopBtnState}" +
                                             $"{(sensors[0].isEnabled == true ? 1 : 0)}" +
                                             $"{(sensors[1].isEnabled == true ? 1 : 0)}" +
                                             $"{(sensors[2].isEnabled == true ? 1 : 0)}" + "0000000000";
@@ -142,6 +145,24 @@ namespace MPS
         {
             foreach (var pusher in pushers)
                 pusher.Stop();
+        }
+
+        public void OnStartBtnClkEvent()
+        {
+            startBtnState = 1;
+            stopBtnState = 0;
+        }
+        public void OnStopBtnClkEvent()
+        {
+            stopBtnState = 1;
+            startBtnState = 0;
+        }
+
+        public void OnEStopBtnClkEvent()
+        {
+            eStopBtnState = (eStopBtnState == 1) ? 0 : 1;
+            startBtnState = 0;
+            stopBtnState = 0;
         }
     }
 

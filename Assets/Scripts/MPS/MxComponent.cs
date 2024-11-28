@@ -66,16 +66,7 @@ public class MxComponent : MonoBehaviour
         }*/
     }
 
-    public void OnStartBtnClkEvent()
-    {
-        if (!isStartBtnClicked)
-        {
-            isStartBtnClicked = true;
-            StartCoroutine(StartReadDevice());
-        }
-    }
-
-    IEnumerator StartReadDevice()
+    public IEnumerator StartReadDevice()
     {
         while(state == State.CONNECTED)
         {
@@ -96,6 +87,8 @@ public class MxComponent : MonoBehaviour
         if(returnValue == 0)
         {
             state = State.CONNECTED;
+
+            StartCoroutine(StartReadDevice());
 
             print("Simulator와 연결이 잘 되었습니다.");
         }
@@ -213,7 +206,6 @@ public class MxComponent : MonoBehaviour
                 string splited = data.Substring(i * 16, 16);        // 1101010001000000
                 splited = Reverse(splited);                         // 0000001000101011(reversed)
                 convertedData[i] = Convert.ToInt32(splited, 2);     // 555(10진수 변환)
-                print(convertedData[i]);
             }
         }
 
