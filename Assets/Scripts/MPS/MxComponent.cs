@@ -71,7 +71,7 @@ public class MxComponent : MonoBehaviour
         while(state == State.CONNECTED)
         {
             WriteDevices("X0", 1, xDevices);
-            yDevices = ReadDevices("Y0", 1);
+            yDevices = ReadDevices("Y0", 2);
 
             yield return new WaitForSeconds(0.3f);
         }

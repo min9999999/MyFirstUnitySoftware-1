@@ -36,7 +36,8 @@ namespace MPS
         {
             isMoving = false;
 
-            StopCoroutine(runningCoroutine);
+            if(runningCoroutine != null)
+                StopCoroutine(runningCoroutine);
         }
 
         IEnumerator RotateCW()

@@ -33,6 +33,10 @@ namespace MPS
             redLamp = lamps[0].material.GetColor("_BaseColor");
             yellowLamp = lamps[1].material.GetColor("_BaseColor");
             greenLamp = lamps[2].material.GetColor("_BaseColor");
+
+            OnLampOnOffBtnClkEvent("Red", false);
+            OnLampOnOffBtnClkEvent("Yellow", false);
+            OnLampOnOffBtnClkEvent("Green", false);
         }
 
         private void Update()
@@ -50,6 +54,12 @@ namespace MPS
             int 송출실린더후진 = MxComponent.Instance.yDevices[5] - '0';
             int 배출실린더전진 = MxComponent.Instance.yDevices[6] - '0';
             int 배출실린더후진 = MxComponent.Instance.yDevices[7] - '0';
+            int 컨베이어CW회전 = MxComponent.Instance.yDevices[8] - '0';
+            int 컨베이어CCW회전= MxComponent.Instance.yDevices[9] - '0';
+            int 컨베이어STOP   = MxComponent.Instance.yDevices[10] - '0';
+            int 빨강램프       = MxComponent.Instance.yDevices[11] - '0';
+            int 노랑램프       = MxComponent.Instance.yDevices[12] - '0';
+            int 초록램프       = MxComponent.Instance.yDevices[13] - '0';
 
             if (공급실린더전진 == 1) cylinders[0].OnForwardBtnClkEvent();
             else if (공급실린더후진 == 1) cylinders[0].OnBackwardBtnClkEvent();
@@ -63,8 +73,40 @@ namespace MPS
             if (배출실린더전진 == 1) cylinders[3].OnForwardBtnClkEvent();
             else if (배출실린더후진 == 1) cylinders[3].OnBackwardBtnClkEvent();
 
-            // 시작버튼,정지버튼,긴급정지버튼,공급센서,물체확인센서,금속확인센서
+            if(컨베이어CW회전 == 1)
+            {
+                foreach (var pusher in pushers)
+                {
+                    pusher.Move(true);
+                }
+            }
+            else if (컨베이어CCW회전 == 1)
+            {
+                foreach (var pusher in pushers)
+                {
+                    pusher.Move(false);
+                }
+            }
 
+            if(컨베이어STOP == 1)
+            {
+                foreach (var pusher in pushers)
+                {
+                    pusher.Stop();
+                }
+            }
+
+            if(빨강램프 == 1) OnLampOnOffBtnClkEvent("Red", true);
+            else OnLampOnOffBtnClkEvent("Red", false);
+
+            if (노랑램프 == 1) OnLampOnOffBtnClkEvent("Yellow", true);
+            else OnLampOnOffBtnClkEvent("Yellow", false);
+
+            if (초록램프 == 1) OnLampOnOffBtnClkEvent("Green", true);
+            else OnLampOnOffBtnClkEvent("Green", false);
+
+
+            // 시작버튼,정지버튼,긴급정지버튼,공급센서,물체확인센서,금속확인센서
             MxComponent.Instance.xDevices = $"{startBtnState}{stopBtnState}{eStopBtnState}" +
                                             $"{(sensors[0].isEnabled == true ? 1 : 0)}" +
                                             $"{(sensors[1].isEnabled == true ? 1 : 0)}" +
@@ -79,7 +121,7 @@ namespace MPS
             //obj.transform.position = spawnPos.position;
         }
 
-        public void OnLampOnOffBtnClkEvent(string name)
+        public void OnLampOnOffBtnClkEvent(string name, bool isActive)
         {
             Color color;
 
@@ -87,13 +129,12 @@ namespace MPS
             {
                 case "Red":
                     color = lamps[0].material.GetColor("_BaseColor");
-                    print(color);
 
-                    if (color == redLamp)
+                    if (color == redLamp && !isActive)
                     {
                         lamps[0].material.SetColor("_BaseColor", Color.black);
                     }
-                    else if (color == Color.black)
+                    else if (color == Color.black && isActive)
                     {
                         lamps[0].material.SetColor("_BaseColor", redLamp);
                     }
@@ -101,13 +142,12 @@ namespace MPS
 
                 case "Yellow":
                     color = lamps[1].material.GetColor("_BaseColor");
-                    print(color);
 
-                    if (color == yellowLamp)
+                    if (color == yellowLamp && !isActive)
                     {
                         lamps[1].material.SetColor("_BaseColor", Color.black);
                     }
-                    else if (color == Color.black)
+                    else if (color == Color.black && isActive)
                     {
                         lamps[1].material.SetColor("_BaseColor", yellowLamp);
                     }
@@ -115,13 +155,12 @@ namespace MPS
 
                 case "Green":
                     color = lamps[2].material.GetColor("_BaseColor");
-                    print(color);
 
-                    if (color == greenLamp)
+                    if (color == greenLamp && !isActive)
                     {
                         lamps[2].material.SetColor("_BaseColor", Color.black);
                     }
-                    else if (color == Color.black)
+                    else if (color == Color.black && isActive)
                     {
                         lamps[2].material.SetColor("_BaseColor", greenLamp);
                     }
@@ -152,6 +191,7 @@ namespace MPS
             startBtnState = 1;
             stopBtnState = 0;
         }
+
         public void OnStopBtnClkEvent()
         {
             stopBtnState = 1;
