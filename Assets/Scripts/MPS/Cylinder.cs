@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace MPS
@@ -18,6 +19,24 @@ namespace MPS
         [SerializeField] Transform backwardLS;
         public bool isForward = false;
         public bool isRodMoving = false;
+        public bool isForwardLSOn = false;
+        public bool isBackwardLSOn = false;
+        MeshRenderer forwardMR;
+        MeshRenderer backwardMR;
+        Color lsOffColor; // red
+
+        private void Start()
+        {
+            // 캐싱 & 래퍼런싱
+            forwardMR = forwardLS.GetComponent<MeshRenderer>();
+            backwardMR = backwardLS.GetComponent<MeshRenderer>();
+
+            lsOffColor = forwardMR.material.color;
+
+            // LS 초기화
+            isBackwardLSOn = true;
+            backwardMR.material.SetColor("_BaseColor", Color.green);
+        }
 
         public void OnForwardBtnClkEvent()
         {
@@ -53,8 +72,35 @@ namespace MPS
 
             isRodMoving = false;
             isForward = !isForward;
+
+            UpdateLimitSwitch(isForward);
         }
 
+        /// <summary>
+        /// 실린더 윗쪽의 LS 색상 변경
+        /// </summary>
+        /// <param name="isForward">전진 또는 후진인지 설정하는 bool 변수</param>
+        private void UpdateLimitSwitch(bool isForward)
+        {
+            if(isForward)
+            {
+                isForwardLSOn = true;
+                isBackwardLSOn = false;
+
+                // 실린더가 전진 상태일 때, 전진 LS의 색상을 녹색으로 변경
+                forwardMR.material.SetColor("_BaseColor", Color.green);
+                backwardMR.material.SetColor("_BaseColor", lsOffColor);
+            }
+            else
+            {
+                isForwardLSOn = false;
+                isBackwardLSOn = true;
+
+                // 실린더가 후진 상태일 때, 전진 LS의 색상을 녹색으로 변경
+                backwardMR.material.SetColor("_BaseColor", Color.green);
+                forwardMR.material.SetColor("_BaseColor", lsOffColor);
+            }
+        }
     }
 
 }

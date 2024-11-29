@@ -22,7 +22,6 @@ public class MxComponent : MonoBehaviour
     public State state = State.DISCONNECTED;
 
     ActUtlType64 mxComponent;
-    [SerializeField] MPSManager mPSManager;
     [SerializeField] TMP_InputField deviceInput;
     public string xDevices = "0000000000000000";
     public string yDevices = "0000000000000000";
@@ -70,8 +69,8 @@ public class MxComponent : MonoBehaviour
     {
         while(state == State.CONNECTED)
         {
-            WriteDevices("X0", 1, xDevices);
-            yDevices = ReadDevices("Y0", 2);
+            WriteDevices("X0", 1, xDevices); // Unity -> PLC : Unity 입력 디바이스(x device)들의 정보를 PLC로 전송
+            yDevices = ReadDevices("Y0", 2); // PLC -> Unity : PLC의 출력 디바이스(y device)들의 정보를 PC로 전송
 
             yield return new WaitForSeconds(0.3f);
         }

@@ -32,7 +32,6 @@ namespace MPS
                     print("금속 감지");
                 }
             }
-
         }
 
         private void OnTriggerExit(Collider other)

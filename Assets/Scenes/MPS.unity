@@ -2502,7 +2502,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 1
-  mPSManager: {fileID: 0}
   deviceInput: {fileID: 834466486}
   xDevices: 0000000000000000
   yDevices: 0000000000000000
