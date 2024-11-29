@@ -39,7 +39,7 @@ public class MxComponent : MonoBehaviour
     {
         mxComponent = new ActUtlType64();
 
-        mxComponent.ActLogicalStationNumber = 1;
+        mxComponent.ActLogicalStationNumber = 0;
     }
 
     /// <summary>
