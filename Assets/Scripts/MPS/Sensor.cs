@@ -19,7 +19,7 @@ namespace MPS
 
         private void OnTriggerStay(Collider other)
         {
-            if(sensorType == SensorType.근접센서)
+            if(sensorType == SensorType.근접센서 || sensorType == SensorType.용량형센서)
             {
                 isEnabled = true;
                 print("물체 감지");
@@ -34,10 +34,20 @@ namespace MPS
             }
         }
 
+        int count = 0;
+
         private void OnTriggerExit(Collider other)
         {
             if (isEnabled)
+            {
                 isEnabled = false;
+                if (sensorType == SensorType.근접센서)
+                {
+                    count++;
+                    print($"제품 갯수는 {count} 입니다.");
+                }
+            }
+
         }
     }
 }
