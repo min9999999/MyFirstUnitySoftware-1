@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿#define TCPServerVersion // MxComponentVersion or TCPServerVersion
+
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,13 +46,15 @@ namespace MPS
         {
             UpdateYDevices();
             UpdateXDevices();
+            UpdateDDevices();
 
             void UpdateYDevices()
             {
+#if MxComponentVersion
                 if (MxComponent.Instance.state == MxComponent.State.DISCONNECTED)
                     return;
 
-                if(MxComponent.Instance.yDevices.Length == 0) return;
+                if (MxComponent.Instance.yDevices.Length == 0) return;
 
                 int 공급실린더전진 = MxComponent.Instance.yDevices[0] - '0';
                 int 공급실린더후진 = MxComponent.Instance.yDevices[1] - '0';
@@ -60,11 +65,32 @@ namespace MPS
                 int 배출실린더전진 = MxComponent.Instance.yDevices[6] - '0';
                 int 배출실린더후진 = MxComponent.Instance.yDevices[7] - '0';
                 int 컨베이어CW회전 = MxComponent.Instance.yDevices[8] - '0';
-                int 컨베이어CCW회전= MxComponent.Instance.yDevices[9] - '0';
-                int 컨베이어STOP   = MxComponent.Instance.yDevices[10] - '0';
-                int 빨강램프       = MxComponent.Instance.yDevices[11] - '0';
-                int 노랑램프       = MxComponent.Instance.yDevices[12] - '0';
-                int 초록램프       = MxComponent.Instance.yDevices[13] - '0';
+                int 컨베이어CCW회전 = MxComponent.Instance.yDevices[9] - '0';
+                int 컨베이어STOP = MxComponent.Instance.yDevices[10] - '0';
+                int 빨강램프 = MxComponent.Instance.yDevices[11] - '0';
+                int 노랑램프 = MxComponent.Instance.yDevices[12] - '0';
+                int 초록램프 = MxComponent.Instance.yDevices[13] - '0';
+#elif TCPServerVersion
+                if (TCPClient.Instance.isConnected == false)
+                    return;
+
+                if (TCPClient.Instance.yDevices.Length == 0) return;
+
+                int 공급실린더전진 = TCPClient.Instance.yDevices[0] - '0';
+                int 공급실린더후진 = TCPClient.Instance.yDevices[1] - '0';
+                int 가공실린더전진 = TCPClient.Instance.yDevices[2] - '0';
+                int 가공실린더후진 = TCPClient.Instance.yDevices[3] - '0';
+                int 송출실린더전진 = TCPClient.Instance.yDevices[4] - '0';
+                int 송출실린더후진 = TCPClient.Instance.yDevices[5] - '0';
+                int 배출실린더전진 = TCPClient.Instance.yDevices[6] - '0';
+                int 배출실린더후진 = TCPClient.Instance.yDevices[7] - '0';
+                int 컨베이어CW회전 = TCPClient.Instance.yDevices[8] - '0';
+                int 컨베이어CCW회전 = TCPClient.Instance.yDevices[9] - '0';
+                int 컨베이어STOP = TCPClient.Instance.yDevices[10] - '0';
+                int 빨강램프 = TCPClient.Instance.yDevices[11] - '0';
+                int 노랑램프 = TCPClient.Instance.yDevices[12] - '0';
+                int 초록램프 = TCPClient.Instance.yDevices[13] - '0';
+#endif
 
                 if (공급실린더전진 == 1) cylinders[0].OnForwardBtnClkEvent();
                 else if (공급실린더후진 == 1) cylinders[0].OnBackwardBtnClkEvent();
@@ -78,7 +104,7 @@ namespace MPS
                 if (배출실린더전진 == 1) cylinders[3].OnForwardBtnClkEvent();
                 else if (배출실린더후진 == 1) cylinders[3].OnBackwardBtnClkEvent();
 
-                if(컨베이어CW회전 == 1)
+                if (컨베이어CW회전 == 1)
                 {
                     foreach (var pusher in pushers)
                     {
@@ -93,7 +119,7 @@ namespace MPS
                     }
                 }
 
-                if(컨베이어STOP == 1)
+                if (컨베이어STOP == 1)
                 {
                     foreach (var pusher in pushers)
                     {
@@ -101,7 +127,7 @@ namespace MPS
                     }
                 }
 
-                if(빨강램프 == 1) OnLampOnOffBtnClkEvent("Red", true);
+                if (빨강램프 == 1) OnLampOnOffBtnClkEvent("Red", true);
                 else OnLampOnOffBtnClkEvent("Red", false);
 
                 if (노랑램프 == 1) OnLampOnOffBtnClkEvent("Yellow", true);
@@ -113,22 +139,62 @@ namespace MPS
 
             void UpdateXDevices()
             {
+#if MxComponentVersion
                 // PLC의 x device를 업데이트
                 MxComponent.Instance.xDevices = $"{startBtnState}" +                                 // 시작버튼 상태    (X0)
-                                                $"{stopBtnState}"  +                                 // 정지버튼         (X1)
+                                                $"{stopBtnState}" +                                 // 정지버튼         (X1)
                                                 $"{eStopBtnState}" +                                 // 긴급정지버튼     (X2) 
                                                 $"{(sensors[0].isEnabled == true ? 1 : 0)}" +        // 공급센서         (X3)
                                                 $"{(sensors[1].isEnabled == true ? 1 : 0)}" +        // 물체확인센서     (X4)
                                                 $"{(sensors[2].isEnabled == true ? 1 : 0)}" +        // 금속확인센서     (X5)
-                                                $"{(cylinders[0].isForwardLSOn  == true ? 1 : 0)}" + // 공급실린더 전진LS(X6)
+                                                $"{(cylinders[0].isForwardLSOn == true ? 1 : 0)}" + // 공급실린더 전진LS(X6)
                                                 $"{(cylinders[0].isBackwardLSOn == true ? 1 : 0)}" + // 공급실린더 후진LS(X7)
-                                                $"{(cylinders[1].isForwardLSOn  == true ? 1 : 0)}" + // 가공실린더 전진LS(X8)
+                                                $"{(cylinders[1].isForwardLSOn == true ? 1 : 0)}" + // 가공실린더 전진LS(X8)
                                                 $"{(cylinders[1].isBackwardLSOn == true ? 1 : 0)}" + // 가공실린더 후진LS(X9)
-                                                $"{(cylinders[2].isForwardLSOn  == true ? 1 : 0)}" + // 송출실린더 전진LS(X0A)
+                                                $"{(cylinders[2].isForwardLSOn == true ? 1 : 0)}" + // 송출실린더 전진LS(X0A)
                                                 $"{(cylinders[2].isBackwardLSOn == true ? 1 : 0)}" + // 송출실린더 후진LS(X0B)
-                                                $"{(cylinders[3].isForwardLSOn  == true ? 1 : 0)}" + // 배출실린더 전진LS(X0C)
+                                                $"{(cylinders[3].isForwardLSOn == true ? 1 : 0)}" + // 배출실린더 전진LS(X0C)
                                                 $"{(cylinders[3].isBackwardLSOn == true ? 1 : 0)}" + // 배출실린더 후진LS(X0D)
                                                 "00";                                                // 사용하지 않는 나머지 2비트(X0E, X0F)
+#elif TCPServerVersion
+                TCPClient.Instance.xDevices = $"{startBtnState}" +                                 // 시작버튼 상태    (X0)
+                                                $"{stopBtnState}" +                                 // 정지버튼         (X1)
+                                                $"{eStopBtnState}" +                                 // 긴급정지버튼     (X2) 
+                                                $"{(sensors[0].isEnabled == true ? 1 : 0)}" +        // 공급센서         (X3)
+                                                $"{(sensors[1].isEnabled == true ? 1 : 0)}" +        // 물체확인센서     (X4)
+                                                $"{(sensors[2].isEnabled == true ? 1 : 0)}" +        // 금속확인센서     (X5)
+                                                $"{(cylinders[0].isForwardLSOn == true ? 1 : 0)}" + // 공급실린더 전진LS(X6)
+                                                $"{(cylinders[0].isBackwardLSOn == true ? 1 : 0)}" + // 공급실린더 후진LS(X7)
+                                                $"{(cylinders[1].isForwardLSOn == true ? 1 : 0)}" + // 가공실린더 전진LS(X8)
+                                                $"{(cylinders[1].isBackwardLSOn == true ? 1 : 0)}" + // 가공실린더 후진LS(X9)
+                                                $"{(cylinders[2].isForwardLSOn == true ? 1 : 0)}" + // 송출실린더 전진LS(X0A)
+                                                $"{(cylinders[2].isBackwardLSOn == true ? 1 : 0)}" + // 송출실린더 후진LS(X0B)
+                                                $"{(cylinders[3].isForwardLSOn == true ? 1 : 0)}" + // 배출실린더 전진LS(X0C)
+                                                $"{(cylinders[3].isBackwardLSOn == true ? 1 : 0)}" + // 배출실린더 후진LS(X0D)
+                                                "00";                                                // 사용하지 않는 나머지 2비트(X0E, X0F)
+
+#endif
+            }
+
+            void UpdateDDevices()
+            {
+#if MxComponentVersion
+                if (MxComponent.Instance.state == MxComponent.State.DISCONNECTED)
+                    return;
+
+                if (MxComponent.Instance.dDevices.Length == 0) return;
+
+                print(MxComponent.Instance.dDevices);
+                print(Convert.ToInt32(MxComponent.Instance.dDevices, 2));
+#elif TCPServerVersion
+                if (TCPClient.Instance.isConnected == false)
+                    return;
+
+                if (TCPClient.Instance.dDevices.Length == 0) return;
+
+                print(TCPClient.Instance.dDevices);
+                print(Convert.ToInt32(TCPClient.Instance.dDevices, 2));
+#endif
             }
         }
 

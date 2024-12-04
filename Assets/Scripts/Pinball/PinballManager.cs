@@ -10,7 +10,7 @@ public class PinballManager : MonoBehaviour
     [SerializeField] TMP_Text pointText;
     [SerializeField] float power = 5;
     [SerializeField] int score;
-    [SerializeField] int gameCount = 3;
+    //[SerializeField] int gameCount = 3;
     Vector3 originSpherePos;
     Quaternion originSphereRot;
     bool isBallTouched;
